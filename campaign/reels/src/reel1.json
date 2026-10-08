@@ -1,0 +1,24 @@
+{
+ "name": "reel1-la-curva",
+ "voice": "voice/reel1.mp3",
+ "html": "reel1.html",
+ "phrases": [
+  "Un set no es una lista de buenos temas.",
+  "Es una curva.",
+  "Defines la duración, el género y la energía de cada fase:",
+  "calentar,",
+  "subir",
+  "y cerrar.",
+  "Y la app te da cada tema con su BPM, su energía y su clave Camelot,",
+  "con una ruta armónica que suena bien.",
+  "Tu set tiene forma antes de pinchar el primer tema.",
+  "Comenta CURVA y te cuento cómo."
+ ],
+ "music_cues": [
+  2,
+  6,
+  6
+ ],
+ "seed": 7,
+ "tail": 1.2
+}

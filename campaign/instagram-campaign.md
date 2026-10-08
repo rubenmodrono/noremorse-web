@@ -1,4 +1,4 @@
-# Campaña Instagram · No Remorse · "Tu set es una curva"
+# Campaña Instagram · nØr3mors3 · "Tu set es una curva"
 
 Objetivo: **3-5 ventas del Plan de Set en 7 días con 0 € de inversión.**
 Todo el contenido sale de una sola herramienta (`next-gen-dj-set-builder`) y de una sola idea.
@@ -40,7 +40,7 @@ El cliente rellena un formulario (género, duración, rango de BPM, tipo de sala
 
 | Elemento | Texto |
 |---|---|
-| Nombre | No Remorse · DJ Sets |
+| Nombre | nØr3mors3 · DJ Sets |
 | Bio línea 1 | Tu set no es una lista, es una curva. |
 | Bio línea 2 | Planes de set con energía + Camelot en 24h |
 | Bio línea 3 | 👇 Pide el tuyo (19 €) |

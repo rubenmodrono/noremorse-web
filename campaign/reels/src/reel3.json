@@ -1,0 +1,24 @@
+{
+ "name": "reel3-antes-y-despues",
+ "voice": "voice/reel3.mp3",
+ "html": "reel3.html",
+ "phrases": [
+  "Mismos temas, dos sets.",
+  "Primero, en orden aleatorio:",
+  "la energía va a trompicones",
+  "y más de la mitad de las transiciones chocan.",
+  "Ahora, los mismos temas colocados con una curva:",
+  "la energía sube y baja con sentido",
+  "y ocho de nueve transiciones encajan.",
+  "No cambia el repertorio, cambia el orden.",
+  "¿Cuál preferirías pinchar?",
+  "Comenta A o B."
+ ],
+ "music_cues": [
+  1,
+  4,
+  4
+ ],
+ "seed": 5,
+ "tail": 1.2
+}

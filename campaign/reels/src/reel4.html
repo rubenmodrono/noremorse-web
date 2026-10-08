@@ -1,0 +1,47 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Reel 4 · 2 horas</title>
+<link rel="stylesheet" href="common.css"><style>
+#segs{position:absolute;left:60px;top:540px;width:960px;height:150px}
+.sg{position:absolute;top:0;height:150px;border-radius:24px;overflow:hidden}
+.sg .fill{position:absolute;inset:0;border-radius:24px}
+.sg .t{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#0b0d12;font-weight:800}
+.sg .t b{font-size:40px}.sg .t small{font-size:32px;font-weight:700}
+#ticks{position:absolute;left:60px;top:706px;width:960px;height:40px;font:600 32px 'DejaVu Sans Mono',monospace;color:var(--mut)}
+#ticks span{position:absolute;transform:translateX(-50%)}
+#info{position:absolute;left:60px;right:60px;top:1320px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:26px;padding:26px 36px;margin-bottom:16px;font-size:46px;font-weight:700;display:flex;align-items:center;gap:22px}
+.card small{color:var(--mut);font-size:34px;font-weight:600}
+#cta{position:absolute;left:0;right:0;top:1400px}
+</style></head><body>
+<div id="segs"></div><div id="ticks"></div><div id="info"></div><div id="cta"></div>
+<script src="cues4.js"></script><script src="data.js"></script><script src="common.js"></script>
+<script>
+const D=window.SET4,N=D.length,W=960,X0=60;
+const mm=m=>X0+W*m/120,CY0=790,CY1=1250,Y=e=>CY1-(CY1-CY0)*e/10;
+const SEGS=[{n:'WARMUP',a:0,b:30,c:'#2a78d6',e:'energía 2–5'},{n:'PEAK',a:30,b:90,c:'#ff3d71',e:'energía 7–10'},{n:'CLOSING',a:90,b:120,c:'#f0c030',e:'energía 4–6,5'}];
+const sx=[S(1),S(2),S(3)];let path,ghost,gx,pts;
+window.init=()=>{
+  $('segs').innerHTML=SEGS.map(s=>`<div class="sg" style="left:${W*s.a/120}px;width:${W*(s.b-s.a)/120-6}px;background:#141821;border:1px solid #232838"><div class="fill" style="background:${s.c};opacity:0"></div><div class="t" style="opacity:0"><b>${s.n}</b><small>${s.b-s.a} min</small></div></div>`).join('');
+  $('ticks').innerHTML=[0,30,90,120].map(m=>`<span style="left:${W*m/120}px">${m}'</span>`).join('');
+  [0,5,10].forEach(v=>el('line',{x1:60,x2:1020,y1:Y(v),y2:Y(v),stroke:'#1c2130','stroke-width':2}));
+  const defs=el('defs',{});const g=el('linearGradient',{id:'lg',x1:0,x2:1,y1:0,y2:0},defs);
+  el('stop',{offset:0,'stop-color':'#2a78d6'},g);el('stop',{offset:.5,'stop-color':'#ff3d71'},g);el('stop',{offset:1,'stop-color':'#f0c030'},g);
+  pts=D.map((d,i)=>[mm((i+.5)*120/N),Y(d.energy)]);
+  path=el('path',{d:cr(pts),fill:'none',stroke:'url(#lg)','stroke-width':12,'stroke-linecap':'round','stroke-linejoin':'round'});
+  ghost=el('path',{d:cr([[mm(0),Y(2.3)],[mm(8),Y(5)],[mm(16),Y(8)],[mm(24),Y(9.6)],[mm(40),Y(9.8)]]),fill:'none',stroke:'#ff4d4d','stroke-width':10,'stroke-linecap':'round','stroke-dasharray':'20 14'});
+  gx=el('text',{x:mm(18),y:Y(9.6)-40,'text-anchor':'middle','font-size':100,'font-weight':800,fill:'#ff4d4d','font-family':'Inter',opacity:0});gx.textContent='✗';
+};
+window.render=t=>{
+  caption(t,[[0,"Un set de","<em>dos horas</em>"],[S(1),"Calentamiento:","<em>25 %</em> · 30 min"],[S(2),"Pico:","<em>la mitad</em> · 60 min"],[S(3),"Cierre:","<em>bajar</em> sin romper"],
+    [S(4),"Una regla","<em>por transición</em>"],[S(5),"No subas","<em>demasiado pronto</em>"],[S(6),"¿Quieres tu","set <em>así</em>?"],[S(7),"",""]]);
+  const sg=document.querySelectorAll('.sg');sx.forEach((s,i)=>{const a=ease(seg(t,s,s+.8));sg[i].querySelector('.fill').style.opacity=.92*a;sg[i].querySelector('.t').style.opacity=a;
+    sg[i].querySelector('.fill').style.clipPath=`inset(0 ${100-100*a}% 0 0)`});
+  const L=path.getTotalLength(),pr=ease(seg(t,S(1),E(3)));path.setAttribute('stroke-dasharray',`${L} ${L}`);path.setAttribute('stroke-dashoffset',L*(1-pr));
+  const gh=t>=S(5)&&t<S(7)?out(seg(t,S(5),S(5)+.6)):0;const GL=ghost.getTotalLength();ghost.setAttribute('opacity',gh);ghost.setAttribute('stroke-dashoffset',-t*40);
+  gx.setAttribute('opacity',t>=S(5)+.6&&t<S(7)?1:0);path.setAttribute('opacity',t>=S(5)&&t<S(7)?.35:1);
+  const info=$('info');let h='';const c=(a,tx,s)=>`<div class="card" style="opacity:${out(seg(t,s,s+.4))}">${a}${tx}</div>`;
+  if(t>=S(4)&&t<S(5)){h=c('<span class="chip" style="background:'+col(8)+'">8A</span>','= misma clave',S(4))+c('<span class="chip" style="background:'+col(9)+'">9A</span>','±1 paso <small>(7A o 9A)</small>',S(4)+.7)+c('<span class="chip" style="background:'+col(8)+'">8B</span>','su relativa <small>(A ↔ B)</small>',S(4)+1.4)}
+  if(t>=S(5)&&t<S(7))h=`<div class="card" style="border-color:#ff4d4d;opacity:${out(seg(t,S(5)+.5,S(5)+1))}"><span class="chip" style="background:#ff4d4d">✗</span>Subir demasiado pronto <small>quema el set</small></div>`;
+  info.innerHTML=h;
+  $('cta').innerHTML=t>=S(7)?ctaHTML('Comenta CURVA',S(7),t,'y te hago el tuyo<br><b>nØr3mors3 · Planes de set en 24h</b>'):'';
+};
+</script></body></html>

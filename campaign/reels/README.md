@@ -1,31 +1,54 @@
-# Reels · No Remorse
+# Reels · nØr3mors3
 
-## Reel 1 · "La curva" (Día 1)
+Cinco Reels verticales (1080×1920, H.264 + AAC) con locución en castellano, música original sin copyright y datos reales del motor de `next-gen-dj-set-builder`.
 
-| Archivo | Qué es |
-|---|---|
-| `reel1-la-curva.mp4` | Reel final, 1080×1920, 25,8 s, H.264 + AAC |
-| `reel1-portada.png` | Portada sugerida (elige "Añadir desde el carrete" al publicar) |
-| `src/reel1.html` | Escena animada. Los datos del set (`set.json`) salen del motor real de `next-gen-dj-set-builder` |
-| `src/render.py` | Renderiza la escena a fotogramas (30 fps) con Playwright |
-| `src/music.py` | Música original sintetizada (126 BPM, La menor / 8A). Sin copyright |
-| `src/reel1-voz.mp3` | Locución en español (vidIQ) |
+| # | Archivo | Día sugerido | Duración | Gancho |
+|---|---|---|---|---|
+| 1 | `reel1-la-curva.mp4` | 1 | 31 s | Tu set no es una lista, es una curva |
+| 2 | `reel2-camelot.mp4` | 2 | 31 s | Mismo tempo no es buena mezcla (rueda Camelot) |
+| 3 | `reel3-antes-y-despues.mp4` | 3 | 29 s | Mismos temas, dos sets: al azar frente a con curva |
+| 4 | `reel4-dos-horas.mp4` | 4 | 35 s | Cómo repartir un set de dos horas |
+| 5 | `reel5-oferta.mp4` | 7 | 29 s | Plan de Set en 24 h · 19 € · 5 plazas |
 
-**Caption para publicar:**
-> Un set no es una lista de buenos temas. Es una curva. 🎚️
-> Warmup → Peak → Closing, con la energía bajo control y ruta armónica Camelot.
-> Comenta CURVA y te cuento cómo.
+`reel1-portada.png` es la portada sugerida del Reel 1.
 
-**Hashtags:** `#djtips #djsets #djlife #rekordbox #mixingtips #camelotwheel #harmonicmixing #djproduction`
+## Captions y hashtags
 
-**Audio:** al subirlo a Instagram, mantén el audio original del vídeo (voz + música propia).
+**Reel 1**
+> Un set no es una lista de buenos temas. Es una curva. 🎚️ Warmup → Peak → Closing, con ruta armónica Camelot. Comenta CURVA y te cuento cómo.
 
-### Regenerar
-```bash
-python src/music.py music.wav 26
-python src/render.py frames 25.8
-ffmpeg -framerate 30 -i frames/%05d.jpg -i src/reel1-voz.mp3 -i music.wav \
-  -filter_complex "[1:a]apad=whole_dur=25.8,volume=1.25,asplit=2[vo1][vo2];[2:a]volume=0.55[m];[m][vo1]sidechaincompress=threshold=0.03:ratio=8:attack=20:release=300[md];[vo2][md]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11,atrim=0:25.8[a]" \
-  -map 0:v -map "[a]" -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -t 25.8 reel1-la-curva.mp4
+**Reel 2**
+> Mismo tempo no significa que suene bien. Desde 8A tienes 3 movimientos seguros: misma clave, ±1 y su relativa (8B). Guárdalo para tu próximo set. 📌
+
+**Reel 3**
+> Mismos 10 temas, dos sets. Al azar: 4 de 9 transiciones encajan. Con curva: 8 de 9. ¿Cuál pincharías? Comenta A o B.
+> *(Cifras reales del motor con una colección sintética. En 500 mezclas al azar salen unas 4 de 9 de media.)*
+
+**Reel 4**
+> Cómo repartir un set de 2 horas: 30' calentamiento · 60' pico · 30' cierre. Y no subas demasiado pronto. ¿Quieres tu set así? Comenta CURVA.
+
+**Reel 5**
+> Plan de Set en 24 h: tú me cuentas género, duración y sala; yo te devuelvo la curva, la tracklist con tempo/energía/clave y, con tu colección, el archivo para importar. 19 € · 5 plazas · si no te sirve, te devuelvo el dinero. Comenta SET.
+
+**Hashtags (todos):** `#djtips #djsets #djlife #rekordbox #mixingtips #camelotwheel #harmonicmixing #djproduction`
+
+Publica con el **audio original** del vídeo (voz + música propia).
+
+## Voz
+La locución usa la voz "Daniel" de vidIQ. **Ninguna voz de vidIQ está marcada como español de España**: los guiones están escritos en castellano (vocabulario y giros peninsulares), pero el acento depende del modelo. Si no te convence, tienes dos salidas sin tocar los vídeos:
+1. Grabar tú los 5 guiones (están en `src/reelN.json`, campo `phrases`) y sustituir `src/voice/reelN.mp3`.
+2. Importar una voz nativa de España como "voz personalizada" en vidIQ y regenerar.
+
+En ambos casos los subtítulos se re-sincronizan solos: `python src/build.py N`.
+
+## Estructura
 ```
-Los tiempos de los subtítulos están sincronizados con esta locución. Si cambias el guion, ajusta las marcas de tiempo en `cap()` y `render()` de `reel1.html`.
+src/build.py       alinea la voz, renderiza (30 fps), sintetiza la música y monta el MP4
+src/align.py       reparte el tiempo de la voz entre las frases del guion
+src/music.py       música original (126 BPM, La menor / 8A)
+src/common.*       estilo y utilidades comunes (marca nØr3mors3)
+src/reelN.html     escena animada de cada Reel · src/reelN.json guion y arreglo musical
+src/set*.json      datos reales del motor (set de 60 min, antes/después, set de 120 min)
+src/voice/         locuciones
+```
+Requisitos: `playwright` (Chromium), `scipy`, `numpy`, `pillow`, `ffmpeg`.

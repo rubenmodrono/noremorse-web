@@ -1,0 +1,22 @@
+{
+ "name": "reel4-dos-horas",
+ "voice": "voice/reel4.mp3",
+ "html": "reel4.html",
+ "phrases": [
+  "Cómo repartir un set de dos horas.",
+  "Calentamiento: el veinticinco por ciento, treinta minutos, con la energía baja o media.",
+  "Pico: la mitad del set, una hora entera con la energía arriba.",
+  "Cierre: otros treinta minutos, bajando sin romper la pista.",
+  "Y una regla: en cada transición, la misma clave, un paso o su relativa.",
+  "El error más típico es subir demasiado pronto.",
+  "¿Quieres tu set así?",
+  "Comenta CURVA."
+ ],
+ "music_cues": [
+  1,
+  2,
+  2
+ ],
+ "seed": 9,
+ "tail": 1.2
+}

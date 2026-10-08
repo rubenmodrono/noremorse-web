@@ -1,0 +1,48 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Reel 3 · Antes y después</title>
+<link rel="stylesheet" href="common.css"><style>
+.lab{position:absolute;left:70px;font-size:40px;font-weight:800;letter-spacing:.04em}
+.lab span{display:inline-block;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px 20px;margin-right:16px;font-size:44px}
+.chips{position:absolute;left:70px;right:70px;display:flex;justify-content:space-between}
+.chips .chip{min-width:0;width:84px;padding:4px 0;font-size:28px}
+.cnt{position:absolute;left:70px;right:70px;font-size:52px;font-weight:800}
+#note{position:absolute;left:60px;right:60px;top:1430px;text-align:center;font-size:52px;font-weight:700;color:var(--mut)}
+#note b{color:var(--txt)}
+#cta{position:absolute;left:0;right:0;top:1400px}
+.ab{display:inline-block;margin:0 22px;padding:28px 56px;border-radius:30px;font-size:64px;font-weight:800;border:3px solid}
+</style></head><body>
+<div class="lab" style="top:488px"><span>A</span>ORDEN ALEATORIO</div><div class="lab" style="top:928px"><span>B</span>CON CURVA</div>
+<div class="chips" id="chA" style="top:822px"></div><div class="chips" id="chB" style="top:1262px"></div>
+<div class="cnt" id="cA" style="top:868px"></div><div class="cnt" id="cB" style="top:1308px"></div>
+<div id="note"></div><div id="cta"></div>
+<script src="cues3.js"></script><script src="data.js"></script><script src="common.js"></script>
+<script>
+const D=window.SET3,X=i=>110+i*(860/9);
+const mk=(d,y0)=>({d,Y:e=>y0+260-260*e/10,y0});
+const A=mk(D.shuffled,545),B=mk(D.engine,985);
+let segs={A:[],B:[]},nodes={A:[],B:[]};
+function build(ch,key){
+  [0,5,10].forEach(v=>el('line',{x1:70,x2:1010,y1:ch.Y(v),y2:ch.Y(v),stroke:'#1c2130','stroke-width':2}));
+  const T=ch.d.tracks;
+  for(let i=0;i<T.length-1;i++)segs[key].push(el('line',{x1:X(i),y1:ch.Y(T[i].energy),x2:X(i),y2:ch.Y(T[i].energy),stroke:ch.d.ok[i]?'#3bd48a':'#ff4d4d','stroke-width':ch.d.ok[i]?10:12,'stroke-linecap':'round','stroke-dasharray':ch.d.ok[i]?'':'2 18'}));
+  T.forEach((tr,i)=>nodes[key].push(el('circle',{cx:X(i),cy:ch.Y(tr.energy),r:0,fill:col(tr.key),stroke:'#0b0d12','stroke-width':4})));
+}
+window.init=()=>{build(A,'A');build(B,'B');
+  const chips=(T)=>T.map(t=>`<span class="chip" style="background:${col(t.key)}">${t.key}</span>`).join('');
+  $('chA').innerHTML=chips(A.d.tracks);$('chB').innerHTML=chips(B.d.tracks)};
+function draw(key,ch,t,t0,t1){const T=ch.d.tracks,n=T.length-1,p=ease(seg(t,t0,t1))*n;
+  nodes[key].forEach((c,i)=>c.setAttribute('r',22*out(seg(p,i-.2,i+.2))));
+  segs[key].forEach((s,i)=>{const q=clamp(p-i);s.style.display=q>0.005?'':'none';s.setAttribute('x2',X(i)+(X(i+1)-X(i))*q);s.setAttribute('y2',ch.Y(T[i].energy)+(ch.Y(T[i+1].energy)-ch.Y(T[i].energy))*q);
+    if(!ch.d.ok[i])s.setAttribute('opacity',.55+.45*Math.abs(Math.sin(t*5)))})}
+const okN=d=>d.ok.filter(Boolean).length;
+window.render=t=>{
+  caption(t,[[0,"Mismos temas,","<em>dos sets</em>"],[S(1),"A · Orden","<em>aleatorio</em>"],[S(3),"Más de la mitad","<em>chocan</em>"],[S(4),"B · Los mismos","temas, <em>con curva</em>"],
+    [S(6),"8 de 9","<em>encajan</em>"],[S(7),"Cambia el <em>orden</em>","no el repertorio"],[S(8),"¿Cuál <em>pincharías</em>?",""],[S(9),"",""]]);
+  draw('A',A,t,S(1),E(2));draw('B',B,t,S(4),E(5));
+  $('chA').style.opacity=out(seg(t,.3,.9));$('chB').style.opacity=out(seg(t,.5,1.1));
+  const cA=$('cA'),cB=$('cB');const a=out(seg(t,S(3),S(3)+.6)),b=out(seg(t,S(6),S(6)+.6));
+  cA.style.opacity=a;cA.innerHTML=`<span style="color:#ff4d4d">${Math.round(okN(A.d)*a)}/9</span> transiciones OK`;
+  cB.style.opacity=b;cB.innerHTML=`<span style="color:#3bd48a">${Math.round(okN(B.d)*b)}/9</span> transiciones OK`;
+  const nt=$('note');nt.style.opacity=seg(t,S(7),S(7)+.5);nt.innerHTML=t>=S(7)&&t<S(8)?'Mismos <b>10 temas</b> · distinto orden':'';
+  $('cta').innerHTML=t>=S(8)?`<div style="text-align:center;opacity:${out(seg(t,S(8),S(8)+.5))}"><span class="ab" style="color:#ff4d4d;border-color:#ff4d4d">A</span><span class="ab" style="color:#3bd48a;border-color:#3bd48a">B</span>${t>=S(9)?`<div class="tag" style="font-size:54px;color:#e8eaf0"><b>Comenta A o B</b><br><span style="font-size:40px;color:#9aa1b5">nØr3mors3 · Planes de set en 24h</span></div>`:''}</div>`:'';
+};
+</script></body></html>

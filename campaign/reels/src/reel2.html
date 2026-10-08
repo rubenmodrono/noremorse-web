@@ -1,0 +1,65 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Reel 2 · Camelot</title>
+<link rel="stylesheet" href="common.css"><style>
+#legend{position:absolute;left:60px;right:60px;top:1410px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.lg{display:flex;align-items:center;gap:20px;font-size:42px;font-weight:700;background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:12px 30px;width:900px}
+.lg .chip{min-width:130px}
+#cta{position:absolute;left:0;right:0;top:1470px}
+</style></head><body>
+<div id="legend"></div><div id="cta"></div>
+<script src="cues2.js"></script><script src="data.js"></script><script src="common.js"></script>
+<script>
+const CXc=540,CYc=935,RO=[300,430],RI=[170,295];
+const ang=n=>((n%12)*30)*Math.PI/180;                      // 12 arriba, sentido horario
+const P=(r,a)=>[CXc+r*Math.sin(a),CYc-r*Math.cos(a)];
+function sector(r0,r1,a){const h=.235,a0=a-h,a1=a+h,p=(r,x)=>P(r,x).map(v=>v.toFixed(1)).join(' ');
+  return `M${p(r1,a0)} A${r1} ${r1} 0 0 1 ${p(r1,a1)} L${p(r0,a1)} A${r0} ${r0} 0 0 0 ${p(r0,a0)} Z`}
+const cells={};let line,ring,clash,route;
+const KEYS=[];for(let n=1;n<=12;n++){KEYS.push(n+'A');KEYS.push(n+'B')}
+const mid=k=>{const n=parseInt(k),b=k.endsWith('B'),r=b?(RO[0]+RO[1])/2:(RI[0]+RI[1])/2;return P(r,ang(n))};
+window.init=()=>{
+  KEYS.forEach(k=>{const n=parseInt(k),b=k.endsWith('B'),[r0,r1]=b?RO:RI;
+    const g=el('g',{});const p=el('path',{d:sector(r0,r1,ang(n)),fill:col(n),opacity:.3},g);
+    const [x,y]=mid(k);const tx=el('text',{x,y:y+13,'text-anchor':'middle','font-size':36,'font-weight':800,fill:'#0b0d12','font-family':'DejaVu Sans Mono'},g);tx.textContent=k;cells[k]={g,p,tx}});
+  ring=el('circle',{r:70,fill:'none',stroke:'#fff','stroke-width':8,opacity:0});
+  line=el('line',{stroke:'#ff4d4d','stroke-width':14,'stroke-linecap':'round','stroke-dasharray':'18 14',opacity:0});
+  route=el('path',{fill:'none',stroke:'#3bd48a','stroke-width':14,'stroke-linecap':'round','stroke-linejoin':'round',opacity:0,filter:'drop-shadow(0 0 12px #3bd48a)'});
+  clash=el('text',{'text-anchor':'middle','font-size':120,'font-weight':800,fill:'#ff4d4d',opacity:0,'font-family':'Inter'});clash.textContent='✗';
+  el('text',{x:CXc,y:CYc-8,'text-anchor':'middle','font-size':48,'font-weight':800,fill:'#9aa1b5','font-family':'Inter',id:'hub'}).textContent='CAMELOT';
+  el('text',{x:CXc,y:CYc+46,'text-anchor':'middle','font-size':30,'font-weight':600,fill:'#5b6070','font-family':'Inter'}).textContent='A menor · B mayor';
+};
+const ROUTE=window.SET1.map(d=>d.key);
+window.render=t=>{
+  caption(t,[[0,"Mismo tempo","no es <em>buena mezcla</em>"],[S(1),"La rueda","<em>Camelot</em>"],[S(2),"Desde <em>8A</em>","tres saltos <em>seguros</em>"],[S(3),"Misma <em>clave</em>",""],
+   [S(4),"Un paso a <em>cada lado</em>",""],[S(5),"O su <em>relativa</em>","8A ↔ 8B"],[S(6),"8A → 3B","<em>choca</em>"],[S(7),"Tu oído lo <em>nota</em>",""],
+   [S(8),"Solo rutas que","<em>suenan bien</em>"],[S(9),"",""]]);
+  const op={},stroke={};KEYS.forEach(k=>{op[k]=.28});
+  const rev=ease(seg(t,S(1),S(1)+1.4));if(t>=S(1)){KEYS.forEach((k,i)=>{op[k]=.28+.72*clamp(rev*2.2-(i/KEYS.length)*1.2)})}
+  const focus=[];if(t>=S(2)){KEYS.forEach(k=>op[k]=.2);focus.push('8A')}
+  if(t>=S(4)){focus.push('7A','9A')}if(t>=S(5)){focus.push('8B')}
+  const bad=t>=S(6)&&t<S(8);if(bad){KEYS.forEach(k=>op[k]=.2);focus.length=0;focus.push('8A')}
+  if(t>=S(8)){KEYS.forEach(k=>op[k]=.2)}
+  focus.forEach(k=>op[k]=1);
+  const rt=t>=S(8)?Math.floor(clamp((t-S(8))/(E(8)-S(8)-.6))*ROUTE.length)+1:0;
+  for(let i=0;i<Math.min(rt,ROUTE.length);i++)op[ROUTE[i]]=1;
+  if(bad)op['3B']=Math.min(1,.2+out(seg(t,S(6)+.9,S(6)+1.4)));
+  KEYS.forEach(k=>{cells[k].p.setAttribute('opacity',op[k]);cells[k].tx.setAttribute('opacity',op[k]>.5?1:.35)});
+  // anillo en 8A
+  const f=t>=S(2)&&t<S(6)||(t>=S(6)&&t<S(8));const [fx,fy]=mid('8A');ring.setAttribute('cx',fx);ring.setAttribute('cy',fy);
+  ring.setAttribute('r',68+8*Math.sin(t*6));ring.setAttribute('opacity',f?.9:0);
+  // línea roja 8A -> 3B
+  const [bx,by]=mid('3B'),lp=out(seg(t,S(6)+.5,S(6)+1.3));line.setAttribute('x1',fx);line.setAttribute('y1',fy);line.setAttribute('x2',fx+(bx-fx)*lp);line.setAttribute('y2',fy+(by-fy)*lp);line.setAttribute('opacity',bad?1:0);
+  clash.setAttribute('x',(fx+bx)/2);clash.setAttribute('y',(fy+by)/2+40);clash.setAttribute('opacity',bad?out(seg(t,S(6)+1.1,S(6)+1.5)):0);
+  const sh=bad&&t>S(7)?Math.sin(t*40)*5:0;clash.setAttribute('transform',`translate(${sh},0)`);
+  // ruta verde
+  const pts=ROUTE.slice(0,Math.max(1,Math.min(rt,ROUTE.length))).map(mid);route.setAttribute('d',pts.length>1?cr(pts):'');route.setAttribute('opacity',t>=S(8)?.9:0);
+  // leyenda
+  const Lg=$('legend');let h='';const row=(c,l,tx,a)=>`<div class="lg" style="opacity:${a};transform:translateY(${(1-a)*24}px)"><span class="chip" style="background:${c}">${l}</span>${tx}</div>`;
+  if(t<S(1))h=`<div class="lg" style="opacity:${out(seg(t,.4,.9))}"><span class="chip" style="background:#3a3f50;color:#e8eaf0">126 BPM</span> → <span class="chip" style="background:#3a3f50;color:#e8eaf0">126 BPM</span> ¿suena bien?</div>`;
+  if(t>=S(3)&&t<S(6)){h+=row(col(8),'8A','= misma clave',out(seg(t,S(3),S(3)+.4)));if(t>=S(4))h+=row(col(9),'9A','y 7A: un paso (±1)',out(seg(t,S(4),S(4)+.4)));if(t>=S(5))h+=row(col(8),'8B','relativa (A ↔ B)',out(seg(t,S(5),S(5)+.4)))}
+  if(bad)h=`<div class="lg" style="border-color:#ff4d4d;opacity:${out(seg(t,S(6)+.8,S(6)+1.3))}"><span class="chip" style="background:#ff4d4d">8A → 3B</span> ✗ suena mal</div>`;
+  if(t>=S(8)&&t<S(9))h=`<div class="lg" style="border-color:#3bd48a;opacity:${out(seg(t,S(8)+.4,S(8)+.9))}"><span class="chip" style="background:#3bd48a">9/9</span> transiciones válidas en el set</div>`;
+  Lg.innerHTML=t>=S(9)?'':h;
+  const bm='<svg width="70" height="90" viewBox="0 0 24 30" style="vertical-align:-14px;margin-right:18px"><path d="M4 2h16v26l-8-6-8 6z" fill="#fff"/></svg>';
+  $('cta').innerHTML=t>=S(9)?ctaHTML(bm+'Guárdalo',S(9),t,'para tu próximo set<br><b>nØr3mors3</b>'):'';
+};
+</script></body></html>

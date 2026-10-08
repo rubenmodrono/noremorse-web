@@ -1,0 +1,21 @@
+{
+ "name": "reel5-oferta",
+ "voice": "voice/reel5.mp3",
+ "html": "reel5.html",
+ "phrases": [
+  "Te planifico el set en veinticuatro horas.",
+  "Me cuentas el género, la duración y el tipo de sala.",
+  "Yo te devuelvo la curva de energía y la lista de temas con su tempo, su energía y su clave.",
+  "Y si me pasas tu colección, el archivo listo para importar en tu programa.",
+  "Diecinueve euros, solo cinco plazas,",
+  "y si no te sirve, te devuelvo el dinero.",
+  "Comenta SET o escríbeme por mensaje."
+ ],
+ "music_cues": [
+  0,
+  1,
+  2
+ ],
+ "seed": 11,
+ "tail": 1.2
+}

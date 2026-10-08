@@ -1,0 +1,24 @@
+{
+ "name": "reel2-camelot",
+ "voice": "voice/reel2.mp3",
+ "html": "reel2.html",
+ "phrases": [
+  "Mismo tempo no significa que suene bien.",
+  "Mira la rueda Camelot.",
+  "Desde ocho A tienes tres movimientos seguros:",
+  "la misma clave,",
+  "un paso a cada lado,",
+  "o saltar a ocho B, su relativa.",
+  "Pero pasar de ocho A a tres B, aunque vaya a tempo, choca.",
+  "Tu oído lo nota, aunque no sepas explicarlo.",
+  "Por eso mi app solo propone rutas que suenan bien.",
+  "Guárdalo para tu próximo set."
+ ],
+ "music_cues": [
+  1,
+  2,
+  6
+ ],
+ "seed": 3,
+ "tail": 1.2
+}

@@ -1,0 +1,17 @@
+:root{--bg:#0b0d12;--panel:#141821;--line:#232838;--txt:#e8eaf0;--mut:#9aa1b5;--pink:#ff3d71;--blue:#2a78d6;--green:#3bd48a;--red:#ff4d4d;--gold:#f0c030}
+*{box-sizing:border-box;margin:0}
+html,body{width:1080px;height:1920px;background:var(--bg);overflow:hidden;font-family:Inter,system-ui,sans-serif;color:var(--txt)}
+#bgglow{position:absolute;inset:0;background:radial-gradient(900px 700px at 50% 38%,rgba(255,61,113,.16),transparent 70%)}
+#brand{position:absolute;top:84px;left:0;width:100%;text-align:center;font-weight:800;letter-spacing:.22em;font-size:36px;color:var(--mut)}
+#brand b{color:var(--pink);font-weight:800}
+#cap{position:absolute;top:200px;left:70px;right:70px;height:270px;font-weight:800;font-size:90px;line-height:1.08;letter-spacing:-.03em}
+#cap em{font-style:normal;color:var(--pink)}
+svg.layer{position:absolute;left:0;top:0}
+.abs{position:absolute}
+.pill{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:20px 34px;font-size:38px;font-weight:700}
+.pill small{color:var(--mut);font-weight:600;font-size:30px;margin-right:12px}
+.chip{white-space:nowrap;display:inline-block;min-width:104px;text-align:center;padding:8px 20px;border-radius:999px;font:700 40px 'DejaVu Sans Mono',monospace;color:#0b0d12}
+.mono{font-family:'DejaVu Sans Mono',monospace}
+.btn{display:inline-block;background:var(--pink);color:#fff;border-radius:999px;padding:34px 80px;font-size:84px;font-weight:800;letter-spacing:-.02em;box-shadow:0 0 90px rgba(255,61,113,.5)}
+.tag{margin-top:44px;font-size:42px;color:var(--mut);font-weight:600;text-align:center}
+.tag b{color:var(--txt)}
