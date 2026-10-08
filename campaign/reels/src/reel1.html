@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Reel 1 · La curva</title>
+<style>
+:root{--bg:#0b0d12;--panel:#141821;--line:#232838;--txt:#e8eaf0;--mut:#9aa1b5;--pink:#ff3d71;--blue:#2a78d6}
+*{box-sizing:border-box;margin:0}
+html,body{width:1080px;height:1920px;background:var(--bg);overflow:hidden;font-family:Inter,system-ui,sans-serif;color:var(--txt)}
+#bgglow{position:absolute;inset:0;background:radial-gradient(900px 700px at 50% 38%,rgba(255,61,113,.16),transparent 70%)}
+#brand{position:absolute;top:90px;left:0;width:100%;text-align:center;font-weight:800;letter-spacing:.42em;font-size:30px;color:var(--mut)}
+#brand b{color:var(--pink)}
+#cap{position:absolute;top:210px;left:70px;right:70px;height:260px;font-weight:800;font-size:92px;line-height:1.08;letter-spacing:-.03em}
+#cap .sub{display:block;font-size:44px;font-weight:600;letter-spacing:0;color:var(--mut);margin-top:22px}
+#cap em{font-style:normal;color:var(--pink)}
+svg{position:absolute;left:0;top:0}
+#pills{position:absolute;left:60px;right:60px;top:1330px;display:flex;gap:18px;flex-wrap:wrap}
+.pill{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:20px 34px;font-size:38px;font-weight:700}
+.pill small{color:var(--mut);font-weight:600;font-size:30px;margin-right:12px}
+#rows{position:absolute;left:60px;right:60px;top:1320px}
+.row{display:flex;align-items:center;gap:22px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:18px 30px;margin-bottom:14px;font:600 38px 'DejaVu Sans Mono',monospace;height:96px}
+.row .n{color:var(--mut);width:56px}.row .bpm{width:230px}.row .en{flex:1;color:var(--mut)}
+.chip{display:inline-block;min-width:104px;text-align:center;padding:8px 20px;border-radius:999px;font:700 40px 'DejaVu Sans Mono',monospace;color:#0b0d12}
+#ribbon{position:absolute;left:60px;right:60px;top:1340px}
+.rline{display:flex;gap:16px;align-items:center;justify-content:center;margin-bottom:34px}
+.arr{color:#4a5063;font-size:36px}
+#ok{position:absolute;left:60px;right:60px;top:1640px;text-align:center;font-size:46px;font-weight:700}
+#ok span{color:#3bd48a}
+#cta{position:absolute;left:0;right:0;top:1330px;text-align:center}
+#cta .btn{display:inline-block;background:var(--pink);color:#fff;border-radius:999px;padding:34px 80px;font-size:84px;font-weight:800;letter-spacing:-.02em;box-shadow:0 0 90px rgba(255,61,113,.5)}
+#cta .tag{margin-top:48px;font-size:42px;color:var(--mut);font-weight:600}
+#cta .tag b{color:var(--txt)}
+</style></head><body>
+<div id="bgglow"></div>
+<div id="brand">NO <b>REMORSE</b></div>
+<div id="cap"></div>
+<svg id="chart" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+<div id="pills"></div><div id="rows"></div><div id="ribbon"></div><div id="ok"></div><div id="cta"></div>
+<script>
+const DATA=[{"i": 1, "phase": "warmup", "key": "8A", "bpm": 122.0, "energy": 2.5, "target": 2.5, "emin": 2.0, "emax": 5.0}, {"i": 2, "phase": "warmup", "key": "9A", "bpm": 123.0, "energy": 3.5, "target": 3.5, "emin": 2.0, "emax": 5.0}, {"i": 3, "phase": "warmup", "key": "10A", "bpm": 123.5, "energy": 4.5, "target": 4.5, "emin": 2.0, "emax": 5.0}, {"i": 4, "phase": "peak_time", "key": "12A", "bpm": 126.0, "energy": 7.3, "target": 7.3, "emin": 7.0, "emax": 10.0}, {"i": 5, "phase": "peak_time", "key": "1A", "bpm": 126.5, "energy": 7.9, "target": 7.9, "emin": 7.0, "emax": 10.0}, {"i": 6, "phase": "peak_time", "key": "2A", "bpm": 127.0, "energy": 8.5, "target": 8.5, "emin": 7.0, "emax": 10.0}, {"i": 7, "phase": "peak_time", "key": "3A", "bpm": 127.5, "energy": 9.1, "target": 9.1, "emin": 7.0, "emax": 10.0}, {"i": 8, "phase": "peak_time", "key": "4A", "bpm": 128.0, "energy": 9.7, "target": 9.7, "emin": 7.0, "emax": 10.0}, {"i": 9, "phase": "closing", "key": "3A", "bpm": 123.5, "energy": 4.6, "target": 4.62, "emin": 4.0, "emax": 6.5}, {"i": 10, "phase": "closing", "key": "5A", "bpm": 124.5, "energy": 5.9, "target": 5.88, "emin": 4.0, "emax": 6.5}];
+const H={1:"#35d6c0",2:"#3bd48a",3:"#7bd44b",4:"#c3d43b",5:"#f0c030",6:"#f29a30",7:"#f06a45",8:"#ee4f7a",9:"#d84fb8",10:"#a465e8",11:"#6a7ae8",12:"#3da0e8"};
+const col=k=>H[parseInt(k)];
+const N=DATA.length, CX0=110, CX1=970, CY0=560, CY1=1200;           // area del grafico
+const X=i=>CX0+i*(CX1-CX0)/(N-1), Y=e=>CY1-(CY1-CY0)*e/10;
+const REAL=DATA.map(d=>d.energy), JAG=[6.2,2.1,8.8,3.0,7.4,1.6,9.2,4.1,8.0,2.6]; // lista sin orden
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), seg=(t,a,b)=>clamp((t-a)/(b-a));
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2, out=x=>1-Math.pow(1-x,3);
+const svg=document.getElementById('chart'), NS='http://www.w3.org/2000/svg';
+function el(n,a,p=svg){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e}
+// capas
+const defs=el('defs',{});const g=el('linearGradient',{id:'lg',x1:0,x2:1,y1:0,y2:0},defs);
+el('stop',{offset:0,'stop-color':'#2a78d6'},g);el('stop',{offset:.55,'stop-color':'#ff3d71'},g);el('stop',{offset:1,'stop-color':'#f0c030'},g);
+const bands=[["Warmup",0,2,"#2a78d6"],["Peak time",3,7,"#ff3d71"],["Closing",8,9,"#f0c030"]].map(([n,a,b,c])=>{
+  const x0=X(a)-(a?(X(1)-X(0))/2:50), x1=X(b)+(b<N-1?(X(1)-X(0))/2:50);
+  const r=el('rect',{x:x0,y:CY0-20,width:x1-x0,height:CY1-CY0+40,rx:22,fill:c,opacity:0});
+  const t=el('text',{x:(x0+x1)/2,y:CY1+70,'text-anchor':'middle',fill:c,'font-size':34,'font-weight':800,opacity:0,'font-family':'Inter'});t.textContent=n.toUpperCase();return{r,t,c}});
+const grid=[0,5,10].map(v=>el('line',{x1:60,x2:1020,y1:Y(v),y2:Y(v),stroke:'#232838','stroke-width':2,opacity:0}));
+const path=el('path',{fill:'none',stroke:'url(#lg)','stroke-width':12,'stroke-linecap':'round','stroke-linejoin':'round'});
+const glow=el('path',{fill:'none',stroke:'url(#lg)','stroke-width':30,'stroke-linecap':'round',opacity:0,filter:'blur(14px)'});
+const dots=DATA.map((d,i)=>el('circle',{r:13,fill:'#fff',stroke:col(d.key),'stroke-width':7,opacity:0}));
+const head=el('circle',{r:20,fill:'#fff',opacity:0});
+function cr(P){ // Catmull-Rom a bezier
+  let d=`M${P[0][0]},${P[0][1]}`;
+  for(let i=0;i<P.length-1;i++){const p0=P[i-1]||P[i],p1=P[i],p2=P[i+1],p3=P[i+2]||p2;
+    d+=` C${p1[0]+(p2[0]-p0[0])/6},${p1[1]+(p2[1]-p0[1])/6} ${p2[0]-(p3[0]-p1[0])/6},${p2[1]-(p3[1]-p1[1])/6} ${p2[0]},${p2[1]}`}
+  return d}
+const $=id=>document.getElementById(id);const R0=document.createElement('div');R0.id='rows0';R0.style.cssText='position:absolute;left:60px;right:60px;top:1320px';document.body.appendChild(R0);
+function cap(t){ // subtitulos grandes sincronizados con la voz
+  const C=[[0,"Tu set no es <em>una lista</em>","de buenos temas."],[2.95,"Es una <em>curva.</em>",""],[4.5,"Defines duración,","género y <em>energía</em>"],
+   [8.6,"Calentar.","<em>Subir.</em> Cerrar."],[11.3,"Cada tema con","<em>BPM, energía</em> y clave"],[14.1,"Una ruta armónica","que <em>suena bien</em>"],
+   [16.6,"Tu set tiene <em>forma</em>","antes del primer tema"],[22.0,"",""]];
+  let c=C[0];for(const x of C)if(t>=x[0])c=x;
+  const a=clamp((t-c[0])/0.25);$('cap').style.opacity=a;$('cap').style.transform=`translateY(${(1-out(a))*24}px)`;
+  $('cap').innerHTML=c[1]+(c[2]?'<br>'+c[2]:'')}
+function render(t){
+  cap(t);
+  // 1) lista sin orden -> curva
+  const morph=ease(seg(t,3.0,4.5)), draw=ease(seg(t,.3,2.4));
+  const pts=REAL.map((e,i)=>[X(i),Y(JAG[i]+(e-JAG[i])*morph)]);
+  const d=cr(pts);path.setAttribute('d',d);glow.setAttribute('d',d);
+  const L=path.getTotalLength();const vis=t<3?draw:1;
+  path.setAttribute('stroke-dasharray',`${L} ${L}`);path.setAttribute('stroke-dashoffset',L*(1-vis));
+  path.setAttribute('opacity',t<3?.55+.2*draw:1);
+  grid.forEach(l=>l.setAttribute('opacity',seg(t,2.9,3.8)*.9));
+  // 2) fases
+  bands.forEach((b,i)=>{const s=[8.74,9.57,10.33][i],a=out(seg(t,s,s+.35));const k=t>11.3?1-seg(t,11.3,11.9)*.6:1;
+    b.r.setAttribute('opacity',a*.16*k);b.t.setAttribute('opacity',a*k)});
+  // 3) puntos con clave
+  dots.forEach((c,i)=>{const s=11.5+i*.26,a=out(seg(t,s,s+.25));c.setAttribute('cx',pts[i][0]);c.setAttribute('cy',pts[i][1]);c.setAttribute('r',13*a);c.setAttribute('opacity',a)});
+  // 4) brillo + cabezal
+  const gl=seg(t,16.6,17.4);glow.setAttribute('opacity',gl*(.35+.15*Math.sin(t*5)));
+  const ph=ease(seg(t,16.7,21.8));const pt=path.getPointAtLength(L*ph);head.setAttribute('cx',pt.x);head.setAttribute('cy',pt.y);head.setAttribute('opacity',gl*(1-seg(t,21.9,22.4)));
+  // lista sin orden (0 - 3)
+  const LS=[["Tema 07",9.2],["Tema 02",2.1],["Tema 11",8.8],["Tema 05",3.0]];
+  if(t<3.2){R0.style.opacity=seg(t,.5,1.0)*(1-seg(t,2.8,3.2));R0.innerHTML=LS.map(([n,e],i)=>`<div class="row" style="opacity:${out(seg(t,.5+i*.2,.9+i*.2))}"><span class="n"></span><span class="bpm" style="width:260px">${n}</span><span class="en">E ${e.toFixed(1)}</span><span class="chip" style="background:#3a3f50;color:#9aa1b5">?</span></div>`).join('')}else R0.innerHTML='';
+  // pills (4.5 - 8.5)
+  const P=$('pills');if(t>=4.5&&t<11.3){const items=[["Duración","60 min"],["Temas",N],["Mezcla","Camelot"]];
+    P.style.opacity=1-seg(t,10.8,11.3);P.innerHTML=items.map(([a,b],i)=>{const o=out(seg(t,4.7+i*.5,5.1+i*.5));return `<div class="pill" style="opacity:${o};transform:translateY(${(1-o)*30}px)"><small>${a}</small>${b}</div>`}).join('')}
+  else P.innerHTML='';
+  // filas del set (11.4 - 14.1)
+  const R=$('rows');if(t>=11.4&&t<14.2){const show=Math.min(4,Math.floor((t-11.4)/.55)+1),off=Math.max(0,Math.floor((t-12.9)/.55));
+    R.style.opacity=1-seg(t,13.9,14.2);R.innerHTML=DATA.slice(0,Math.min(N,show+off)).slice(-4).map((d,j)=>{const idx=Math.min(N,show+off)-Math.min(4,Math.min(N,show+off))+j;
+      return `<div class="row"><span class="n">${String(d.i).padStart(2,'0')}</span><span class="bpm">${d.bpm.toFixed(1)} BPM</span><span class="en">E ${d.energy.toFixed(1)}</span><span class="chip" style="background:${col(d.key)}">${d.key}</span></div>`}).join('')}
+  else R.innerHTML='';
+  // ruta armonica (14.2 - 22)
+  const B=$('ribbon'),OK=$('ok');
+  if(t>=14.2&&t<22){const rows=[DATA.slice(0,5),DATA.slice(5)];let n=0;B.style.opacity=1-seg(t,21.6,22);
+    B.innerHTML=rows.map(r=>`<div class="rline">`+r.map((d,j)=>{const a=out(seg(t,14.3+(n++)*.2,14.65+(n-1)*.2));return (j?`<span class="arr" style="opacity:${a}">→</span>`:'')+`<span class="chip" style="background:${col(d.key)};opacity:${a};transform:scale(${.6+.4*a})">${d.key}</span>`}).join('')+`</div>`).join('');
+    OK.style.opacity=seg(t,16.3,16.8)*(1-seg(t,21.6,22));OK.innerHTML=`<span>9/9</span> transiciones válidas`}
+  else{B.innerHTML='';OK.innerHTML=''}
+  // CTA
+  const Cc=$('cta');if(t>=22.1){const a=out(seg(t,22.1,22.6)),pulse=1+.03*Math.sin((t-22)*7);
+    Cc.innerHTML=`<div class="btn" style="opacity:${a};transform:scale(${(.85+.15*a)*pulse})">Comenta CURVA</div><div class="tag" style="opacity:${seg(t,22.6,23.1)}">y te cuento cómo<br><b>Planes de set en 24h</b></div>`}else Cc.innerHTML='';
+}
+window.render=render;render(0);
+</script></body></html>
